@@ -1,0 +1,4 @@
+services:
+#    tic_tac_toe_game.example:
+#        class: TicTacToe\GameBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
