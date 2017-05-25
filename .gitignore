@@ -15,3 +15,4 @@
 /vendor/
 /web/bundles/
 /vagrant_ansible_inventory.yml
+/.vagrant/
