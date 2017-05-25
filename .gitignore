@@ -14,3 +14,4 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+/vagrant_ansible_inventory.yml
