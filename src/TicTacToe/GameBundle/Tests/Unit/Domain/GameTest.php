@@ -23,7 +23,7 @@ class GameTest extends TestCase
     {
         $board = new Board(3);
         $game = new Game($board);
-        $user = new User($game::USER_TEAM_MARKER);
+        $user = new User($game::USER_TEAM_ID);
 
         $game->move($user, 0, 0);
 
@@ -37,7 +37,7 @@ class GameTest extends TestCase
     {
         $board = new Board(3);
         $game = new Game($board);
-        $user = new User($game::USER_TEAM_MARKER);
+        $user = new User($game::USER_TEAM_ID);
 
         $game->move($user, 99, 99);
     }
@@ -49,7 +49,7 @@ class GameTest extends TestCase
     {
         $board = new Board(3);
         $game = new Game($board);
-        $user = new User($game::USER_TEAM_MARKER);
+        $user = new User($game::USER_TEAM_ID);
 
         $game->move($user, 0, 0);
         $game->move($user, 0, 0);
@@ -62,33 +62,91 @@ class GameTest extends TestCase
     {
         $board = new Board(3);
         $game = new Game($board);
-        $user = new User($game::USER_TEAM_MARKER);
+        $user = new User($game::USER_TEAM_ID);
+        $bot = new Bot($game::BOT_TEAM_ID);
+
+        $game->move($user, 0, 0);
+        $game->move($bot, 0, 2);
+        $game->move($user, 1, 1);
+        $game->move($bot, 0, 1);
+        $game->move($user, 1, 2);
+        $game->move($bot, 1, 0);
+        $game->move($user, 2, 0);
+        $game->move($bot, 2, 2);
+        $game->move($user, 2, 1);
+
+        $game->move($user, 0, 0);
+    }
+
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\FinishedGameWithWinnerException
+     */
+    public function testMoveUserWhenThereIsWinnerByRowShouldThrowException()
+    {
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_ID);
 
         $game->move($user, 0, 0);
         $game->move($user, 0, 1);
         $game->move($user, 0, 2);
-        $game->move($user, 1, 0);
-        $game->move($user, 1, 1);
-        $game->move($user, 1, 2);
-        $game->move($user, 2, 0);
-        $game->move($user, 2, 1);
-        $game->move($user, 2, 2);
 
-        $game->move($user, 0, 0);
-
-        print_r($game->getBoard()->getStatus());
+        $game->move($user, 0, 2);
     }
 
-    public function testMoveUserWhenThereIsWinnerShouldThrowException()
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\FinishedGameWithWinnerException
+     */
+    public function testMoveUserWhenThereIsWinnerByColumnShouldThrowException()
     {
-        $this->assertTrue(true);
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_ID);
+
+        $game->move($user, 0, 0);
+        $game->move($user, 1, 0);
+        $game->move($user, 2, 0);
+
+        $game->move($user, 0, 2);
+    }
+
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\FinishedGameWithWinnerException
+     */
+    public function testMoveUserWhenThereIsWinnerByMainDiagonalShouldThrowException()
+    {
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_ID);
+
+        $game->move($user, 0, 0);
+        $game->move($user, 1, 1);
+        $game->move($user, 2, 2);
+
+        $game->move($user, 0, 2);
+    }
+
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\FinishedGameWithWinnerException
+     */
+    public function testMoveUserWhenThereIsWinnerBySecondDiagonalShouldThrowException()
+    {
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_ID);
+
+        $game->move($user, 0, 2);
+        $game->move($user, 1, 1);
+        $game->move($user, 2, 0);
+
+        $game->move($user, 0, 2);
     }
 
     public function testMoveBotShouldReturnModifiedBoardWithNewBotPosition()
     {
         $board = new Board(3);
         $game = new Game($board);
-        $bot = new Bot($game::BOT_TEAM_MARKER);
+        $bot = new Bot($game::BOT_TEAM_ID);
 
         $game->move($bot, 0,1);
 
