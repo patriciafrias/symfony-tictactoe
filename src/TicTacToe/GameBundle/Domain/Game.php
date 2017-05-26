@@ -1,7 +1,10 @@
 <?php
 
 namespace TicTacToe\GameBundle\Domain;
-use PHPUnit\Runner\Exception;
+
+use TicTacToe\GameBundle\Exception\InvalidPositionException;
+use TicTacToe\GameBundle\Exception\NoPositionsAvailableException;
+use TicTacToe\GameBundle\Exception\NotEmptyPositionException;
 
 /**
  * Class Game
@@ -9,7 +12,7 @@ use PHPUnit\Runner\Exception;
  */
 class Game
 {
-    /** @var null|Board  */
+    /** @var null|Board */
     private $board = null;
 
     public const USER_TEAM_MARKER = 'X';
@@ -30,37 +33,53 @@ class Game
     }
 
     /**
-     * @param $coordinateX
-     * @param $coordinateY
-     * @param $player Player
+     * @param Player $player
+     * @param int $coordinateX
+     * @param int $coordinateY
+     * @return array
      */
-    public function move($coordinateX, $coordinateY, $player)
+    public function move(Player $player, int $coordinateX, int $coordinateY)
     {
-        try {
-            $position = $this->validatePosition($coordinateX, $coordinateY);
+        $this->validatePosition($coordinateX, $coordinateY);
 
-            if ("" == $position) {
-                $updatedBoard = $player->setPosition($coordinateX, $coordinateY, $this->getBoard()->getStatus());
-
-                $this->getBoard()->setStatus($updatedBoard);
-            }
-        } catch (\Exception $e) {
-            echo "Error. $e->getMessage()" . PHP_EOL;
-        }
+        $this->getBoard()->setPosition($coordinateX, $coordinateY, $player->getTeamMarker());
 
         return $this->getBoard()->getStatus();
     }
 
-    private function validatePosition($x, $y)
+    /**
+     * @param int $x
+     * @param int $y
+     * @throws InvalidPositionException
+     * @throws NoPositionsAvailableException
+     * @throws NotEmptyPositionException
+     */
+    private function validatePosition(int $x, int $y)
     {
-        $position = $this->getBoard()->getStatus()[$x][$y];
+        $gameStatus = $this->getBoard()->getStatus();
 
-        if (!isset($position)) {
-            // TODO: throws an exception position doesn't exist
-            throw new Exception("'Position doesn't exist.");
+        // Check if there is any available position
+        $rowsWithAvailablePositions = array_filter($gameStatus, function ($position) {
+            return in_array("", $position);
+        });
+
+        // Non-existent position.
+        if (!isset($gameStatus[$x][$y])) {
+            throw new InvalidPositionException("Error. Position [$x,$y] does not exist.");
+
+        } else {
+
+            // If there is not empty position Board is completed.
+            if (!$rowsWithAvailablePositions) {
+                throw new NoPositionsAvailableException("Error. No positions available. Game is over.");
+
+            } else {
+
+                // Busy position but there are available positions.
+                if (!empty($gameStatus[$x][$y]) && $rowsWithAvailablePositions) {
+                    throw new NotEmptyPositionException("Error. Position [$x,$y] is not availabale.");
+                }
+            }
         }
-
-        return $position;
     }
-
 }

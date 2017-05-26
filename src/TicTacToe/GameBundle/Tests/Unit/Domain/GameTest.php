@@ -3,9 +3,11 @@
 namespace TicTacToe\GameBundle\Tests\Unit\Domain;
 
 use PHPUnit\Framework\TestCase;
-use TicTacToe\GameBundle\Domain\{
-    Board, Bot, Game, User
-};
+
+use TicTacToe\GameBundle\Domain\Board;
+use TicTacToe\GameBundle\Domain\Bot;
+use TicTacToe\GameBundle\Domain\Game;
+use TicTacToe\GameBundle\Domain\User;
 
 class GameTest extends TestCase
 {
@@ -23,30 +25,58 @@ class GameTest extends TestCase
         $game = new Game($board);
         $user = new User($game::USER_TEAM_MARKER);
 
-        $game->move(0, 0, $user);
+        $game->move($user, 0, 0);
 
         $this->assertEquals([['X', '', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
     }
 
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\InvalidPositionException
+     */
     public function testMoveUserToInvalidPositionShouldThrowException()
     {
         $board = new Board(3);
         $game = new Game($board);
         $user = new User($game::USER_TEAM_MARKER);
 
-        $game->move(0, 31, $user);
-
-        $this->assertEquals([['X', '', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
+        $game->move($user, 99, 99);
     }
 
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\NotEmptyPositionException
+     */
     public function testMoveUserToBusyPositionShouldThrowException()
     {
-        $this->assertTrue(true);
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_MARKER);
+
+        $game->move($user, 0, 0);
+        $game->move($user, 0, 0);
     }
 
+    /**
+     * @expectedException \TicTacToe\GameBundle\Exception\NoPositionsAvailableException
+     */
     public function testMoveUserWhenThereIsNoMoreMovesShouldThrowException()
     {
-        $this->assertTrue(true);
+        $board = new Board(3);
+        $game = new Game($board);
+        $user = new User($game::USER_TEAM_MARKER);
+
+        $game->move($user, 0, 0);
+        $game->move($user, 0, 1);
+        $game->move($user, 0, 2);
+        $game->move($user, 1, 0);
+        $game->move($user, 1, 1);
+        $game->move($user, 1, 2);
+        $game->move($user, 2, 0);
+        $game->move($user, 2, 1);
+        $game->move($user, 2, 2);
+
+        $game->move($user, 0, 0);
+
+        print_r($game->getBoard()->getStatus());
     }
 
     public function testMoveUserWhenThereIsWinnerShouldThrowException()
@@ -60,7 +90,7 @@ class GameTest extends TestCase
         $game = new Game($board);
         $bot = new Bot($game::BOT_TEAM_MARKER);
 
-        $game->move(0, 1, $bot);
+        $game->move($bot, 0,1);
 
         $this->assertEquals([['', 'O', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
     }

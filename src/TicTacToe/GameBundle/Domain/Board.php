@@ -22,6 +22,16 @@ class Board
     }
 
     /**
+     * @param int $coordinateX
+     * @param int $coordinateY
+     * @param string $teamMarker
+     */
+    public function setPosition(int $coordinateX, int $coordinateY, string $teamMarker)
+    {
+        $this->status[$coordinateX][$coordinateY] = $teamMarker;
+    }
+
+    /**
      * @return array
      */
     public function getStatus(): array
@@ -38,7 +48,6 @@ class Board
         $this->status = $status;
         return $this;
     }
-
 
     /**
      * Build a new board with a given size.

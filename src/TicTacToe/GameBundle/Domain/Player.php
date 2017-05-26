@@ -26,5 +26,5 @@ abstract class Player
         return $this->teamMarker;
     }
 
-    abstract public function setPosition($coordinateX, $coordinateY, $boardStatus);
+    //abstract public function setPosition($coordinateX, $coordinateY, $boardStatus);
 }

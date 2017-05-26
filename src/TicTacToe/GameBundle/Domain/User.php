@@ -8,10 +8,5 @@ namespace TicTacToe\GameBundle\Domain;
  */
 class User extends Player
 {
-    public function setPosition($coordinateX, $coordinateY, $boardStatus)
-    {
-        $boardStatus[$coordinateX][$coordinateY] = $this->getTeamMarker();
 
-        return $boardStatus;
-    }
 }
