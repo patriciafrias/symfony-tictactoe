@@ -13,9 +13,12 @@ class AppKernel extends Kernel
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
             new TicTacToe\GameBundle\TicTacToeGameBundle(),
+            new TicTacToe\ApiBundle\TicTacToeApiBundle(),
+            new TicTacToe\ClientBundle\TicTacToeClientBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

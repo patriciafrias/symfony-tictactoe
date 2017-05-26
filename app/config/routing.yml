@@ -1,3 +1,9 @@
-tic_tac_toe_game:
-    resource: "@TicTacToeGameBundle/Resources/config/routing.yml"
+tic_tac_toe_client:
+    resource: "@TicTacToeClientBundle/Resources/config/routing.yml"
     prefix:   /
+
+tic_tac_toe_api:
+    resource: "@TicTacToeApiBundle/Resources/config/routing.yml"
+    prefix:   /api/v1/
+
+
