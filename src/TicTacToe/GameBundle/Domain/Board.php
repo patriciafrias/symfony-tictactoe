@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace TicTacToe\GameBundle\Domain;
 
+use TicTacToe\GameBundle\Domain\Helper\GameOverHelper;
 use TicTacToe\GameBundle\Exception\InvalidPositionException;
 use TicTacToe\GameBundle\Exception\NoPositionsAvailableException;
 use TicTacToe\GameBundle\Exception\NotEmptyPositionException;
@@ -86,21 +87,15 @@ class Board
      */
     private function validatePosition(int $coordinateX, int $coordinateY)
     {
-        // Non-existent position.
         if (!isset($this->status[$coordinateX][$coordinateY])) {
             throw new InvalidPositionException("Position [$coordinateX,$coordinateY] does not exist.");
         } else {
-            // Check if there is any available position.
-            $rowsWithAvailablePositions = array_filter($this->status, function ($position) {
-                return in_array("", $position);
-            });
+            $gameOver = GameOverHelper::isGameOver($this->status);
 
-            // If there is not empty position Board is completed.
-            if (!$rowsWithAvailablePositions) {
+            if ($gameOver) {
                 throw new NoPositionsAvailableException("No positions available. Game is over.");
             } else {
-                // Busy position but there are available positions.
-                if (!empty($this->status[$coordinateX][$coordinateY]) && $rowsWithAvailablePositions) {
+                if (!empty($this->status[$coordinateX][$coordinateY]) && !$gameOver) {
                     throw new NotEmptyPositionException("Position [$coordinateX,$coordinateY] is not availabale.");
                 }
             }
