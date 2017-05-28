@@ -1,81 +1,67 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace TicTacToe\GameBundle\Tests\Unit\Domain;
 
 use PHPUnit\Framework\TestCase;
-
+use PHPUnit_Framework_MockObject_MockObject;
 use TicTacToe\GameBundle\Domain\Board;
-use TicTacToe\GameBundle\Domain\Bot;
 use TicTacToe\GameBundle\Domain\Game;
-use TicTacToe\GameBundle\Domain\User;
+use TicTacToe\GameBundle\Domain\PlayerAbstract;
 
+/**
+ * Class GameTest
+ * @package TicTacToe\GameBundle\Tests\Unit\Domain
+ */
 class GameTest extends TestCase
 {
+    /** @var PHPUnit_Framework_MockObject_MockObject|Board */
+    private $boardMock = null;
+
+    /** @var PHPUnit_Framework_MockObject_MockObject|PlayerAbstract */
+    private $playerMock = null;
+
+    public function setUp()
+    {
+        $this->boardMock = $this->getMockBuilder(Board::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatus', 'setPosition', 'validatePosition'])
+            ->getMock();
+
+        $this->playerMock = $this->getMockBuilder(PlayerAbstract::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['move'])
+            ->getMock();
+    }
+
     public function testInitializeGameShouldReturnEmptyBoard()
     {
-        $board = new Board(3);
-        $game = new Game($board);
+        $this->boardMock->expects($this->once())
+            ->method('getStatus')
+            ->willReturn([['', '', ''], ['', '', ''], ['', '', '']]);
+
+        $game = new Game($this->boardMock);
 
         $this->assertEquals([['', '', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
     }
 
-    public function testMoveUserShouldReturnModifiedBoardWithNewUserPosition()
+    public function testPlayerMoveShouldReturnModifiedBoardWithNewUserPosition()
     {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
+        $this->boardMock->expects($this->exactly(3))
+            ->method('getStatus')
+            ->willReturn([['X', '', ''], ['', '', ''], ['', '', '']]);
 
-        $game->move($user, 0, 0);
+        $this->playerMock->expects($this->once())
+            ->method('move')
+            ->with($this->boardMock)
+            ->willReturn($this->boardMock);
+
+        $game = new Game($this->boardMock);
+
+        $game->move($this->playerMock);
 
         $this->assertEquals([['X', '', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
-    }
-
-    /**
-     * @expectedException \TicTacToe\GameBundle\Exception\InvalidPositionException
-     */
-    public function testMoveUserToInvalidPositionShouldThrowException()
-    {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
-
-        $game->move($user, 99, 99);
-    }
-
-    /**
-     * @expectedException \TicTacToe\GameBundle\Exception\NotEmptyPositionException
-     */
-    public function testMoveUserToBusyPositionShouldThrowException()
-    {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
-
-        $game->move($user, 0, 0);
-        $game->move($user, 0, 0);
-    }
-
-    /**
-     * @expectedException \TicTacToe\GameBundle\Exception\NoPositionsAvailableException
-     */
-    public function testMoveUserWhenThereIsNoMoreMovesShouldThrowException()
-    {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
-        $bot = new Bot($game::BOT_TEAM_ID);
-
-        $game->move($user, 0, 0);
-        $game->move($bot, 0, 2);
-        $game->move($user, 1, 1);
-        $game->move($bot, 0, 1);
-        $game->move($user, 1, 2);
-        $game->move($bot, 1, 0);
-        $game->move($user, 2, 0);
-        $game->move($bot, 2, 2);
-        $game->move($user, 2, 1);
-
-        $game->move($user, 0, 0);
     }
 
     /**
@@ -83,15 +69,13 @@ class GameTest extends TestCase
      */
     public function testMoveUserWhenThereIsWinnerByRowShouldThrowException()
     {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
+        $this->boardMock->expects($this->once())
+            ->method('getStatus')
+            ->willReturn([['X', 'X', 'X'], ['', '', ''], ['', '', '']]);
 
-        $game->move($user, 0, 0);
-        $game->move($user, 0, 1);
-        $game->move($user, 0, 2);
+        $game = new Game($this->boardMock);
 
-        $game->move($user, 0, 2);
+        $game->move($this->playerMock);
     }
 
     /**
@@ -99,15 +83,13 @@ class GameTest extends TestCase
      */
     public function testMoveUserWhenThereIsWinnerByColumnShouldThrowException()
     {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
+        $this->boardMock->expects($this->once())
+            ->method('getStatus')
+            ->willReturn([['X', '', ''], ['X', '', ''], ['X', '', '']]);
 
-        $game->move($user, 0, 0);
-        $game->move($user, 1, 0);
-        $game->move($user, 2, 0);
+        $game = new Game($this->boardMock);
 
-        $game->move($user, 0, 2);
+        $game->move($this->playerMock);
     }
 
     /**
@@ -115,15 +97,13 @@ class GameTest extends TestCase
      */
     public function testMoveUserWhenThereIsWinnerByMainDiagonalShouldThrowException()
     {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
+        $this->boardMock->expects($this->once())
+            ->method('getStatus')
+            ->willReturn([['X', '', ''], ['', 'X', ''], ['', '', 'X']]);
 
-        $game->move($user, 0, 0);
-        $game->move($user, 1, 1);
-        $game->move($user, 2, 2);
+        $game = new Game($this->boardMock);
 
-        $game->move($user, 0, 2);
+        $game->move($this->playerMock);
     }
 
     /**
@@ -131,35 +111,12 @@ class GameTest extends TestCase
      */
     public function testMoveUserWhenThereIsWinnerBySecondDiagonalShouldThrowException()
     {
-        $board = new Board(3);
-        $game = new Game($board);
-        $user = new User($game::USER_TEAM_ID);
+        $this->boardMock->expects($this->once())
+            ->method('getStatus')
+            ->willReturn([['', '', 'X'], ['', 'X', ''], ['X', '', '']]);
 
-        $game->move($user, 0, 2);
-        $game->move($user, 1, 1);
-        $game->move($user, 2, 0);
+        $game = new Game($this->boardMock);
 
-        $game->move($user, 0, 2);
-    }
-
-    public function testMoveBotShouldReturnModifiedBoardWithNewBotPosition()
-    {
-        $board = new Board(3);
-        $game = new Game($board);
-        $bot = new Bot($game::BOT_TEAM_ID);
-
-        $game->move($bot, 0,1);
-
-        $this->assertEquals([['', 'O', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
-    }
-
-    public function testMoveBotWhenThereIsNoMoreMovesShouldThrowException()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testMoveBotWhenThereIsWinnerShouldThrowException()
-    {
-        $this->assertTrue(true);
+        $game->move($this->playerMock);
     }
 }

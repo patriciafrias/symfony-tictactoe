@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace TicTacToe\GameBundle\Domain;
 
 use TicTacToe\GameBundle\Exception\FinishedGameWithWinnerException;
@@ -13,8 +15,10 @@ use TicTacToe\GameBundle\Exception\NotEmptyPositionException;
  */
 class Game
 {
+    /** @var string */
     const USER_TEAM_ID = 'X';
 
+    /** @var string */
     const BOT_TEAM_ID = 'O';
 
     /** @var null|Board */
@@ -23,6 +27,10 @@ class Game
     /** @var null */
     private $winnerTeam = null;
 
+    /**
+     * Game constructor.
+     * @param Board $board
+     */
     public function __construct(Board $board)
     {
         $this->board = $board;
@@ -37,58 +45,23 @@ class Game
     }
 
     /**
-     * @param Player $player
-     * @param int $coordinateX
-     * @param int $coordinateY
+     * @param PlayerAbstract $player
+     * @throws InvalidPositionException
+     * @throws NoPositionsAvailableException
+     * @throws NotEmptyPositionException
      * @return array
      */
-    public function move(Player $player, int $coordinateX, int $coordinateY)
+    public function move(PlayerAbstract $player)
     {
-        // First check if Winner
         $this->checkWinner();
 
-        // Validate position for next move
-        $this->validatePosition($coordinateX, $coordinateY);
-
-        $this->getBoard()->setPosition($coordinateX, $coordinateY, $player->getTeamMarker());
+        $this->board = $player->move($this->getBoard());
 
         return $this->getBoard()->getStatus();
     }
 
     /**
-     * @param int $x
-     * @param int $y
-     * @throws InvalidPositionException
-     * @throws NoPositionsAvailableException
-     * @throws NotEmptyPositionException
-     */
-    private function validatePosition(int $x, int $y)
-    {
-        $gameStatus = $this->getBoard()->getStatus();
-
-        // Non-existent position.
-        if (!isset($gameStatus[$x][$y])) {
-            throw new InvalidPositionException("Position [$x,$y] does not exist.");
-        } else {
-            // Check if there is any available position
-            $rowsWithAvailablePositions = array_filter($gameStatus, function ($position) {
-                return in_array("", $position);
-            });
-
-            // If there is not empty position Board is completed.
-            if (!$rowsWithAvailablePositions) {
-                throw new NoPositionsAvailableException("No positions available. Game is over.");
-            } else {
-                // Busy position but there are available positions.
-                if (!empty($gameStatus[$x][$y]) && $rowsWithAvailablePositions) {
-                    throw new NotEmptyPositionException("Position [$x,$y] is not availabale.");
-                }
-            }
-        }
-    }
-
-    /**
-     * @return mixed|null
+     * @throws FinishedGameWithWinnerException
      */
     private function checkWinner()
     {
@@ -104,8 +77,11 @@ class Game
         }
     }
 
-    // Check winner per ROW
-    private function isWinnerByRow($gameStatus)
+    /**
+     * @param $gameStatus
+     * @return bool
+     */
+    private function isWinnerByRow(array $gameStatus)
     {
         // TODO: maybe better move to a separated class
 
@@ -132,8 +108,11 @@ class Game
         return false;
     }
 
-    // Check winner per COLUMN
-    private function isWinnerByColumn($gameStatus)
+    /**
+     * @param array $gameStatus
+     * @return bool
+     */
+    private function isWinnerByColumn(array $gameStatus)
     {
         // TODO: refactor by moving this code to a separated function/class
 
@@ -160,14 +139,17 @@ class Game
         return false;
     }
 
-    // Check winner per DIAGONAL
-    private function isWinnerByDiagonals($gameStatus)
+    /**
+     * @param array $gameStatus
+     * @return bool
+     */
+    private function isWinnerByDiagonals(array $gameStatus)
     {
         // TODO: refactor by moving this code to a separated function/class
         return $this->isWinnerByMainDiagonal($gameStatus) || $this->isWinnerBySecondDiagonal($gameStatus);
     }
 
-    private function isWinnerByMainDiagonal($gameStatus): bool
+    private function isWinnerByMainDiagonal(array $gameStatus): bool
     {
         $teamPositions = 0;
         $teamPositionZero = $gameStatus[0][0];
@@ -194,7 +176,11 @@ class Game
         return false;
     }
 
-    private function isWinnerBySecondDiagonal($gameStatus): bool
+    /**
+     * @param array $gameStatus
+     * @return bool
+     */
+    private function isWinnerBySecondDiagonal(array $gameStatus): bool
     {
         $teamPositions = 0;
         $teamPositionZero = $gameStatus[0][count($gameStatus)-1];

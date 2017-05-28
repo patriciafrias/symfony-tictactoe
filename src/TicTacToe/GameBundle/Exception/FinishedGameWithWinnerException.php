@@ -6,7 +6,7 @@ namespace TicTacToe\GameBundle\Exception;
 
 use Exception;
 
-class NoPositionsAvailableException extends Exception
+class FinishedGameWithWinnerException extends Exception
 {
 
 }
