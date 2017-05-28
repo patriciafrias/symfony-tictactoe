@@ -135,7 +135,7 @@ class IntegrationGameTest extends TestCase
 
         $game->move($bot);
 
-        $this->assertEquals([['', 'O', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
+        $this->assertEquals([['O', '', ''], ['', '', ''], ['', '', '']], $game->getBoard()->getStatus());
     }
 
     /**
