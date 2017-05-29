@@ -38,6 +38,7 @@ class Bot extends PlayerAbstract
     }
 
     /**
+     * Calculate next move.
      * @param Board $board
      */
     private function getNextMove(Board $board)
@@ -73,6 +74,7 @@ class Bot extends PlayerAbstract
     }
 
     /**
+     * Implements minimax Algorithm in order to minimize the possible loss of the bot.
      * @param array $gameStatus
      * @param int $level
      * @param bool $isBotTeam
