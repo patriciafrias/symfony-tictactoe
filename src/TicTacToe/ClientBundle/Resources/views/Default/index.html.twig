@@ -2,17 +2,36 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="info-container container">
+        <div class="notice-winner">
+            {# If status is NOOK, the game is Over. There is a winner. #}
+            {% if content.status == 'NOOK' %}
+                <h2 class="has-winner">
+                    {{ content.message }}
+                </h2>
+            {% else %}
+                <h1 class="has-no-winner">Let's play!</h1>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="board-container container">
         <table>
-            {% if content.status == 'OK' %}
+            {% if content.data %}
+
                 {% for row in content.data %}
                     <tr>
-
                         {% for column in row %}
                             <td class="cell-{{ loop.parent.loop.index - 1 }}{{ loop.index - 1 }}">
                                 {% if column == '' %}
+                                    {% if content.status == 'NOOK' %}
+                                        {% set class = 'read-only-link' %}
+                                    {% else %}
+                                        {% set class = 'default-link' %}
+                                    {% endif %}
+
                                     <a href="{{ app.request.getBaseURL() }}/user-move/{{ loop.parent.loop.index - 1 }}/{{ loop.index - 1 }}"
-                                       class="cell-{{ loop.parent.loop.index - 1 }}{{ loop.index - 1 }}">&nbsp;</a>
+                                       class="cell-{{ loop.parent.loop.index - 1 }}{{ loop.index - 1 }} {{ class }}">&nbsp;</a>
                                 {% else %}
                                     <span class="cell-empty">{{ column }}</span>
                                 {% endif %}
@@ -20,8 +39,13 @@
                         {% endfor %}
                     </tr>
                 {% endfor %}
+
             {% endif %}
         </table>
+    </div>
+
+    <div class="restart container">
+        <a href="{{ app.request.getBaseURL() }}" class="restart-button">Restart</a>
     </div>
 
 {% endblock %}
@@ -31,68 +55,121 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
+
+        body * {
+            box-sizing: border-box;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+        }
+
         .container {
-            background-color: #5bc0de;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 60px;
-            width: 600px;
-            padding: 40px;
+            padding-bottom: 20px;
+            padding-top: 30px;
+            width: 380px;
         }
+
+        .board-container {
+            background-color: #5bc0de;
+        }
+
         table {
             background-color: #5bc0de;
             border: none;
             border-collapse: collapse;
             margin-left: auto;
             margin-right: auto;
-            padding: 50px;
-            width: 450px;
+            width: 300px;
         }
+
         table td {
-            border: 3px solid #6c6159;
+            border: 3px solid #8c8c8c;
             border-collapse: collapse;
             box-sizing: border-box;
             color: #FFFFFF;
-            font-weight: 600;
-            height: 150px;
-            width: 150px;
-            min-width: 150px;
+            font-weight: 500;
+            height: 100px;
+            width: 100px;
+            min-width: 100px;
             text-align: center;
             vertical-align: middle;
         }
+
+        table td span,
+        table td a {
+            color: #FFFFFF;
+            display: block;
+            font-size: 4em;
+            height: 70px;
+            max-height: 100px;
+            margin-right: auto;
+            margin-left: auto;
+            min-width: 100px;
+            text-align: center;
+            width: 100px;
+            max-width: 100px;
+        }
+
         table tr:first-of-type td {
             border-top: none;
         }
+
         table tr:last-of-type td {
             border-bottom: none;
         }
+
         table tr td.cell-00,
         table tr td.cell-10,
         table tr td.cell-20 {
             border-left: none;
         }
+
         table tr td.cell-02,
         table tr td.cell-12,
         table tr td.cell-22 {
             border-right: none;
         }
-        table td a {
-            color: #FFFFFF;
-            display: block;
-            font-size: 4em;
-            margin-right: auto;
-            margin-left: auto;
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            width: 150px;
-            min-width: 150px;
+
+        .info-container {
+            min-height: 170px;
         }
-        table td span.cell-empty {
+
+        .notice-winner {
+            color: #5bc0de;
+        }
+
+        .has-winner {
+            background-color: #a94442;
             color: #FFFFFF;
-            font-size: 4em;
-            width: 150px;
-            min-width: 150px;
+            font-size: 1.5em;
+            font-weight: 400;
+            text-align: center;
+            padding: 10px 0 10px 0;
+        }
+
+        .has-no-winner {
+            color: #6c6159;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .restart a {
+            background: #8c8c8c;;
+            color: #FFFFFF;
+            font-weight: 500;
+            font-size: 1.8em;
+            border: 3px solid #8c8c8c;
+            padding: 10px 0 10px 0;
+            text-align: center;
+        }
+
+        .read-only-link {
+            pointer-events: none;
+            cursor: none;
         }
     </style>
 {% endblock %}
