@@ -1,0 +1,8 @@
+#tic_tac_toe_api_homepage:
+#    path:     /
+#    defaults: { _controller: TicTacToeApiBundle:Default:index }
+#
+
+tic_tac_toe_api:
+    type: rest
+    resource: TicTacToe\ApiBundle\Controller\DefaultController
