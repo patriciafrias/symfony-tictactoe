@@ -6,7 +6,7 @@
         <remote-mappings server-id="php@7e6e8c7b-2aa4-4b4f-91a3-2dbf19a22e75">
           <settings>
             <list>
-              <mapping local-root="$PROJECT_DIR$/src/TicTacToe/GameBundle/Tests" remote-root="/var/www/ticatactoe/src/TicTacToe/GameBundle/Tests" />
+              <mapping local-root="$USER_HOME$/PhpstormProjects/tictactoe/src/TicTacToe/ApiBundle/Tests" remote-root="/var/www/ticatactoe/src/TicTacToe/ApiBundle/Tests" />
             </list>
           </settings>
         </remote-mappings>

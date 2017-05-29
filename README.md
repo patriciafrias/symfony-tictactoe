@@ -1,69 +1,55 @@
-Symfony Standard Edition
-========================
+Tic Tac Toe Game
+=================================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+This is an Application based on Symfony 3.
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
 
-What's inside?
---------------
+Main technologies in this project
+---------------------------------
 
-The Symfony Standard Edition is configured with the following defaults:
+  * Symfony 3.
 
-  * An AppBundle you can use to start coding;
+  * Vagrant Box that can be reused to setup the development environment.
+  
+  * Ansible to provision the Vagrant Box. The roles used in this project are provided by https://github.com/geerlingguy/
 
-  * Twig as the only configured template engine;
+  * FOS Rest Bundle to add a Rest Api.    
+  
+  * PHPUnit to test each part of the application implementing TDD as much as possible, either Unit and Integration tests.
+  
+  
+Structure
+---------------------------------
+ 
+The code is separated in three bundles. 
+GameBundle contains Unit and Integration tests.
+Test code coverage can be found at var/cache/coverage.
+    
+* GameBundle
+    This bundle contains all the logic business.                     
+           
+* ApiBundle
+    With three endpoints to interact with the GameBundle:
+        "/api/v1/start-game" to start a new game.
+        "/api/v1/user-move/{x}/{y}" to allows users play by using the UI provided by the client.
+        "/api/v1/bot-move" to make a move for the bot after user move.
+        
+* ClientBundle
+    Contains an user interfaces to allows users playing against to the bot.
+    
+    
+How setup this application
+---------------------------------
 
-  * Doctrine ORM/DBAL;
+* Install dependencies 
+    VirtualBox
+    Vagrant
+    Ansible
 
-  * Swiftmailer;
-
-  * Annotations enabled for everything.
-
-It comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  https://symfony.com/doc/3.2/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.2/doctrine.html
-[8]:  https://symfony.com/doc/3.2/templating.html
-[9]:  https://symfony.com/doc/3.2/security.html
-[10]: https://symfony.com/doc/3.2/email.html
-[11]: https://symfony.com/doc/3.2/logging.html
-[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
+* Install Tic Tac Toe        
+    - Copy "vagrant_inventory.example.yml" to "vagrant_inventory.yml" and replace what you need.
+    - Check "ansible/hosts" file to make sure that some parameters match with vagrant_inventory.yml.
+    - Run "vagrant up"
+    - Run "Vagrant ssh" to access to the development box.
+    - Run "composer install"
+    - Make sure to add a new host in you /etc/hosts (check the IP in your vagrant_inventory)  

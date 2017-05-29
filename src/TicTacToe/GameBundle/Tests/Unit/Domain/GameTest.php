@@ -48,7 +48,7 @@ class GameTest extends TestCase
 
     public function testPlayerMoveShouldReturnModifiedBoardWithNewUserPosition()
     {
-        $this->boardMock->expects($this->exactly(3))
+        $this->boardMock->expects($this->exactly(4))
             ->method('getStatus')
             ->willReturn([['X', '', ''], ['', '', ''], ['', '', '']]);
 

@@ -65,8 +65,9 @@ class DefaultController extends FOSRestController
             ];
         } catch (Exception $e) {
             $data = [
-                'status' => 'KO',
-                'data' => $e->getMessage(),
+                'status' => 'NOOK',
+                'message' => $e->getMessage(),
+                'data' => $game->getBoard()->getStatus(),
             ];
         }
 
@@ -94,8 +95,9 @@ class DefaultController extends FOSRestController
             ];
         } catch (Exception $e) {
             $data = [
-                'status' => 'KO',
-                'data' => $e->getMessage(),
+                'status' => 'NOOK',
+                'message' => $e->getMessage(),
+                'data' => $game->getBoard()->getStatus(),
             ];
         }
 

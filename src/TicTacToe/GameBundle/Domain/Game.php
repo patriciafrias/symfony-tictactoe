@@ -43,6 +43,7 @@ class Game
     }
 
     /**
+     * Make a move for a given player
      * @param PlayerAbstract $player
      * @throws InvalidPositionException
      * @throws NoPositionsAvailableException
@@ -51,9 +52,13 @@ class Game
      */
     public function move(PlayerAbstract $player)
     {
+        // check winner before move
         $this->checkWinner();
 
         $this->board = $player->move($this->getBoard());
+
+        // check winner after move
+        $this->checkWinner();
 
         return $this->getBoard()->getStatus();
     }
