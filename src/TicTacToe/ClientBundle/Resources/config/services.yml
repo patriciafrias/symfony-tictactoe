@@ -1,0 +1,4 @@
+services:
+#    tic_tac_toe_client.example:
+#        class: TicTacToe\ClientBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

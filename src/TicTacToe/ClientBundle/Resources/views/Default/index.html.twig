@@ -1,0 +1,24 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <table width="300" border="1">
+    {% if content.status == 'OK' %}
+        {% for row in content.data %}
+            <tr>
+
+            {% for column in row %}
+                <td>
+                    {% if column == '' %}
+                        <a href="http://local.ticatactoe.com/app_dev.php/user-move/{{ loop.parent.loop.index - 1}}/{{ loop.index - 1 }}">&nbsp;&nbsp;</a>
+                    {% else %}
+                        {{ column }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endif %}
+    </table>
+
+{% endblock %}

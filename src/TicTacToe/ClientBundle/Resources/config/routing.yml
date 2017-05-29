@@ -1,0 +1,11 @@
+tic_tac_toe_client_homepage:
+    path:     /
+    defaults: { _controller: TicTacToeClientBundle:Default:index }
+
+tic_tac_toe_client_user_move:
+    path:     /user-move/{x}/{y}
+    defaults: { _controller: TicTacToeClientBundle:Default:userMove }
+
+tic_tac_toe_client_bot_move:
+    path:     /bot-move
+    defaults: { _controller: TicTacToeClientBundle:Default:botMove }
